@@ -63,6 +63,11 @@ jobs:
         token: ${{ steps.gh-api-token.outputs.token }}
         repository: stripe/stripe-cli
         path: stripe-cli
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ steps.gh-api-token.outputs.token }}
+        repository: stripe/sdk-codegen
+        path: sdk-codegen
 
     - run: |
         rm -f ./api/openapi-spec/spec3.sdk.json 
@@ -74,6 +79,12 @@ jobs:
         rm -f ./stripe-mock/embedded/openapi/fixtures3.json
         cp openapi/spec3.json stripe-mock/embedded/openapi/spec3.json
         cp openapi/fixtures3.json stripe-mock/embedded/openapi/fixtures3.json
+
+    - run: |
+        rm -f ./sdk-codegen/openapi/spec3.sdk.yaml
+        rm -f ./stripe-mock/embedded/openapi/fixtures3.json
+        cp openapi/spec3.sdk.yaml ./sdk-codegen/openapi/spec3.sdk.yaml
+        cp openapi/spec3.sdk.beta.yaml ./sdk-codegen/openapi/spec3.sdk.beta.yaml
 
     # Create pull request on stripe-mock
     - name: Create Pull Request
@@ -97,6 +108,25 @@ jobs:
       uses: peter-evans/create-pull-request@v4
       with:
         path: stripe-cli
+        title: OpenAPI Update
+        body: |
+          Automated OpenAPI update for https://github.com/stripe/openapi/commit/${{ github.sha }}
+
+          This pull request was initiated by @${{ github.actor }}
+
+          [→ Debug this workflow](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}})
+        branch: update-openapi
+        token: ${{ steps.gh-api-token.outputs.token }}
+        delete-branch: true
+        commit-message: Update OpenAPI for ${{ github.sha }}
+        committer: "Stripe OpenAPI <105521251+stripe-openapi[bot]@users.noreply.github.com>"
+        author: "Stripe OpenAPI <105521251+stripe-openapi[bot]@users.noreply.github.com>"
+
+    # Create pull request on sdk-codegen
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        path: sdk-codegen
         title: OpenAPI Update
         body: |
           Automated OpenAPI update for https://github.com/stripe/openapi/commit/${{ github.sha }}
