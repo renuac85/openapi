@@ -84,7 +84,7 @@ jobs:
 
     - run: |
         rm -f ./sdk-codegen/openapi/spec3.sdk.yaml
-        rm -f ./stripe-mock/embedded/openapi/fixtures3.json
+        rm -f ./sdk-codegen/openapi/spec3.sdk.beta.yaml
         cp openapi/spec3.sdk.yaml ./sdk-codegen/openapi/spec3.sdk.yaml
         cp openapi/spec3.sdk.beta.yaml ./sdk-codegen/openapi/spec3.sdk.beta.yaml
 
